@@ -34,6 +34,27 @@ function getClearText(text){
     return result;
 }
 
+function checkDongNenLay(text){
+    text = text.trim();
+    if(text.indexOf('.com')>0){
+        return false;
+    }
+    if(text.indexOf('配色：')>0){
+        return false;
+    }
+    if(text.indexOf('字号：增大减小')>0){
+        return false;
+    }
+    if(text.indexOf('自动滚屏：')>0){
+        return false;
+    }
+    if(text.indexOf('自动翻页：')>0){
+        return false;
+    }
+
+    return true;
+}
+
 const scraperObject = {
     async scraper(browser){
         // Loop through each of those links, open a new page instance and get the relevant data from them
@@ -52,23 +73,7 @@ const scraperObject = {
 
             for(p in plist){
                 let line = getClearText(plist[p]);
-                if(line !== '' && line.indexOf('.com')<0)
-                    content += line;
-            }
-            
-            // content = replaceAll(content, '(adsbygoogle = window.adsbygoogle || []).push({});','');
-            dataObj['content'] = content;
-            fs.writeFile( `${dataJson}${chuong}.json`, JSON.stringify(dataObj), 'utf8', function(err) {
-                if(err) {
-                    return console.log(err);
-                }
-            });
-            
-
-            content = '';
-            for(p in plist){
-                let line = getClearText(plist[p]);
-                if(line !== ''&& line.indexOf('.com')<0)
+                if(checkDongNenLay(line))
                     content += `<p>${line}</p>`;
             }
             dataObj['content'] = content;
@@ -85,14 +90,15 @@ const scraperObject = {
         });
 
         let i = 0;
-        let step = 18
-        let lengthStep = 50;
-        for(i=1+step*lengthStep;i<=(1+step)*lengthStep;i++){
-            let currentPageData = await pagePromise(i, links[i].link);
+        let step = 0
+        let lengthStep = 1000;
+        // for(i=step*lengthStep;i<=(1+step)*lengthStep;i++){
+        for(i=684;i<=(1+step)*lengthStep;i++){
+            let currentPageData = await pagePromise(i+1, links[i].link);
             scrapedData.push(currentPageData);
     
             console.log(currentPageData.title);
-            await delay(2500);
+            await delay(3000);
         }
         // for(i=3377;i<=3500;i++){
         //     let link = 'https://tamlinh247.vn/truyen-hau-due-kiem-than/chuong-' + i+'/';
