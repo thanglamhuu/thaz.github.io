@@ -1,1 +1,1 @@
-https://thanglamhuu.github.io/thaz.github.io/
+https://thanglamhuu.github.io/thaz.github.io/danhSachTruyen.json
